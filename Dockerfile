@@ -1,25 +1,8 @@
-FROM ruby:alpine
-MAINTAINER Chef Software, Inc. <docker@chef.io>
+FROM chef/inspec:latest
 
-ARG VERSION=3.2.6
-ARG GEM_SOURCE=https://rubygems.org
-
-RUN mkdir -p /share
-RUN apk add --update build-base libxml2-dev libffi-dev git openssh-client && \
-    gem install --no-document --source ${GEM_SOURCE} --version ${VERSION} inspec && \
-    apk del build-base
-    
-RUN apk add --update sudo curl python-dev libffi-dev build-base ca-certificates openssh-client ansible git bash wget openssl groff less python py-pip jq perl openssh make bash curl-dev build-base    
-    
-RUN apk add --no-cache \
-    curl \
-    jq \
-    openrc \
-    py-pip \
-    docker \
- && pip install \
-    awscli
-RUN rc-update add docker boot
+RUN apk add --update git bash wget openssl groff less python py-pip jq perl openssh make
+RUN pip install --upgrade pip
+RUN pip install --quiet awscli
 
 # https://github.com/hashicorp/docker-hub-images/blob/master/packer/Dockerfile-light
 ENV PACKER_VERSION=1.3.3
@@ -45,7 +28,5 @@ RUN sha256sum -cs terraform_${TERRAFORM_VERSION}_SHA256SUMS
 RUN unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /bin
 RUN rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
-ENTRYPOINT ["inspec"]
-CMD ["help"]
-VOLUME ["/share"]
-WORKDIR /share
+# irrelevant
+CMD ["/bin/ash"]
