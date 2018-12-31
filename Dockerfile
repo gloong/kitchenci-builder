@@ -1,5 +1,21 @@
 FROM chef/inspec:latest
 
+RUN apk add --update sudo curl python-dev libffi-dev build-base ca-certificates openssh-client ansible git bash wget openssl groff less python py-pip jq perl openssh make bash curl-dev build-base
+RUN pip install --upgrade pip
+RUN set -xe \
+    && mkdir -p /etc/ansible \
+    && echo 'localhost' > /etc/ansible/hosts
+RUN apk add --no-cache \
+    curl \
+    jq \
+    openrc \
+    py-pip \
+    docker \
+ && pip install \
+    awscli
+RUN rc-update add docker boot
+
+
 RUN apk add --update git bash wget openssl groff less python py-pip jq perl openssh make
 RUN pip install --upgrade pip
 RUN pip install --quiet awscli
